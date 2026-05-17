@@ -165,6 +165,6 @@ function prodsApi() {
 export default defineConfig({
   plugins: [react(), prodsApi()],
   server: {
-    allowedHosts: ["connector-chomp-mouth.ngrok-free.dev"],
+    allowedHosts: true,
   },
 })
