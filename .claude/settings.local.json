@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(ls C:\\\\Users\\\\민\\\\yourtail\\\\src -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName)",
+      "PowerShell(\\(Get-Content C:\\\\Users\\\\민\\\\yourtail\\\\src\\\\App.jsx | Measure-Object -Line\\).Lines)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "PowerShell(npm run *)",
+      "PowerShell(ngrok http *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Get-Content C:\\\\Users\\\\민\\\\AppData\\\\Roaming\\\\npm\\\\ngrok.ps1; \"---\"; Get-ChildItem \"C:\\\\Users\\\\민\\\\AppData\\\\Roaming\\\\npm\" -Filter \"ngrok*\")",
+      "PowerShell(& \"C:\\\\Users\\\\민\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\ngrok\\\\bin\\\\ngrok.exe\" config check 2>&1 | Select-Object -First 10)",
+      "PowerShell(Start-Process -FilePath \"C:\\\\Users\\\\민\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\ngrok\\\\bin\\\\ngrok.exe\" -ArgumentList \"http\",\"--domain=connector-chomp-mouth.ngrok-free.dev\",\"5174\" -WindowStyle Hidden -PassThru | Select-Object Id,ProcessName)",
+      "PowerShell(try { \\(Invoke-WebRequest http://localhost:5174 -UseBasicParsing -ErrorAction Stop\\).StatusCode } catch { \"dev server unreachable: $_\" })",
+      "PowerShell(try { $r = Invoke-WebRequest \"http://localhost:5174/api/prods\" -UseBasicParsing -ErrorAction Stop; \"Status: $\\($r.StatusCode\\)`nBody: $\\($r.Content\\)\" } catch { \"Error: $_\" })",
+      "PowerShell($body = '[{\"id\":999,\"cat\":\"Dog\",\"tag\":\"Test\",\"e\":\"🐾\",\"price\":12345,\"n\":{\"en\":\"Test\",\"ko\":\"테스트\",\"ja\":\"テスト\"},\"d\":{\"en\":\"x\",\"ko\":\"x\",\"ja\":\"x\"}}]'; Invoke-WebRequest \"http://localhost:5174/api/prods\" -Method POST -Body $body -ContentType \"application/json\" -UseBasicParsing | Select-Object StatusCode; \"---\"; \\(Invoke-WebRequest \"http://localhost:5174/api/prods\" -UseBasicParsing\\).Content; \"---\"; Test-Path C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(if \\(Test-Path C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json\\) { \\(Get-Content C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json -Raw\\).Length; \"---\"; $j = Get-Content C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json -Raw | ConvertFrom-Json; $j | ForEach-Object { [pscustomobject]@{ id=$_.id; name=$_.n.ko; hasThumb=[bool]$_.thumb; subsFilled=\\($_.subs | Where-Object {$_}\\).Count } } | Format-Table -AutoSize } else { \"no data file yet\" })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\민\\\\yourtail\\\\src\" -Recurse -Force | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize)",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\민\\\\yourtail\\\\src\\\\App.jsx\" | Measure-Object -Line\\).Lines)",
+      "PowerShell($content = Get-Content \"C:\\\\Users\\\\민\\\\yourtail\\\\src\\\\App.jsx\" -Raw; Write-Output \\(\"Total chars: \" + $content.Length\\); Write-Output \\(\"Last 1000 chars:\"\\); Write-Output \\($content.Substring\\($content.Length - 1000\\)\\))",
+      "PowerShell(New-Item *)",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json\"\\); Write-Output \\(\"Size: \" + $bytes.Length\\); Write-Output \\(\"First 4 bytes \\(hex\\): \" + \\($bytes[0..3] | ForEach-Object { $_.ToString\\(\"X2\"\\) }\\) -join \" \"\\); $text = [System.IO.File]::ReadAllText\\(\"C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json\", [System.Text.Encoding]::UTF8\\); Write-Output \\(\"First 200 chars utf8: \" + $text.Substring\\(0,[Math]::Min\\(200,$text.Length\\)\\)\\))",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json\"\\); $sample = $bytes[30..50]; \\($sample | ForEach-Object { $_.ToString\\(\"X2\"\\) }\\) -join \" \")",
+      "PowerShell($text = [System.IO.File]::ReadAllText\\(\"C:\\\\Users\\\\민\\\\yourtail\\\\data\\\\prods.json\", [System.Text.Encoding]::UTF8\\); $i = $text.IndexOf\\('\"e\":\"'\\); $i; $text.Substring\\($i, 12\\) | ForEach-Object { foreach \\($c in $_.ToCharArray\\(\\)\\) { \"{0}: U+{1:X4}\" -f $c, [int][char]$c } })",
+      "PowerShell($out = \\(Get-Content C:\\\\Users\\\\민\\\\yourtail\\\\src\\\\App.jsx | Measure-Object -Line\\).Lines; Write-Output \"App.jsx lines: $out\")",
+      "PowerShell(npx vite build 2>&1 | Out-String | Write-Output)",
+      "PowerShell($lines = \\(Get-Content \"C:\\\\Users\\\\민\\\\yourtail\\\\src\\\\App.jsx\" -Encoding utf8\\).Count; Write-Output \"Total lines: $lines\")",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 3; $r.StatusCode } catch { \"Not running: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5173/src/App.jsx\" -UseBasicParsing -TimeoutSec 3; \"OK\" } catch { $_.Exception.Message })",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\민\\\\yourtail\" -Depth 0 | Where-Object { -not $_.PSIsContainer } | Select-Object Name)",
+      "PowerShell(winget *)",
+      "PowerShell(choco *)",
+      "PowerShell(Get-Item *)",
+      "PowerShell(Start-Process -FilePath \"$env:TEMP\\\\git-installer.exe\" -ArgumentList \"/VERYSILENT\",\"/NORESTART\",\"/NOCANCEL\",\"/SP-\",\"/CLOSEAPPLICATIONS\",\"/RESTARTAPPLICATIONS\",\"/COMPONENTS=icons,ext\\\\reg\\\\shellhere,assoc,assoc_sh\" -Wait; Write-Host \"Git install completed\")",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); & \"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.exe\" --version)",
+      "PowerShell(git *)"
+    ]
+  }
+}
