@@ -169,19 +169,21 @@ const MOCK=[
 
 function usePersistent(key,initial){
   const[v,setV]=useState(initial);
+  const[ready,setReady]=useState(false);
   const loaded=useRef(false);
   useEffect(()=>{
     fetch("/api/state/"+key).then(r=>r.ok?r.json():null).then(d=>{
-      if(d!==null&&d!==undefined){setV(d);return;}
-      try{const s=localStorage.getItem("yt_"+key);const p=s&&JSON.parse(s);if(p!==null&&p!==undefined)setV(p);}catch{}
-    }).catch(()=>{}).finally(()=>{loaded.current=true;});
+      if(d!==null&&d!==undefined) setV(d);
+      else try{const s=localStorage.getItem("yt_"+key);const p=s&&JSON.parse(s);if(p!==null&&p!==undefined)setV(p);}catch{}
+      loaded.current=true;setReady(true);
+    }).catch(()=>{loaded.current=true;setReady(true);});
   },[]);
   useEffect(()=>{
     if(!loaded.current)return;
     try{localStorage.setItem("yt_"+key,JSON.stringify(v));}catch{}
     fetch("/api/state/"+key,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});
   },[v]);
-  return[v,setV];
+  return[v,setV,ready];
 }
 
 function useSwipe(onL,onR){
@@ -209,7 +211,7 @@ export default function App(){
   const[selId,setSelId]=useState(null);
   const[iIdx,setIIdx]=useState(0);
   const[heroIdx,setHeroIdx]=useState(0);
-  const[heroes,setHeroes]=usePersistent("heroes",DEFAULT_HEROES);
+  const[heroes,setHeroes,heroesReady]=usePersistent("heroes",DEFAULT_HEROES);
   const[heroSubText,setHeroSubText]=usePersistent("heroSubText","Close to you, always.");
   const[heroBtnText,setHeroBtnText]=usePersistent("heroBtnText","");
   const[brand,setBrand]=useState("Apple");
@@ -545,7 +547,7 @@ fullBtn:{display:"block",width:"100%",background:C.br,color:"#FFFFFF",border:"no
         )}
 
         {/* HOME */}
-        {pg==="home"&&(
+        {pg==="home"&&heroesReady&&(
           <div style={ss.heroWrap} onTouchStart={e=>{const t=e.touches[0].clientX;e.currentTarget.dataset.sx=t;}} onTouchEnd={e=>{const d=e.changedTouches[0].clientX-e.currentTarget.dataset.sx;if(d<-40)switchHero((heroIdx+1)%heroes.length);else if(d>40)switchHero((heroIdx-1+heroes.length)%heroes.length);}} onMouseDown={e=>{e.currentTarget.dataset.sx=e.clientX;}} onMouseUp={e=>{const d=e.clientX-e.currentTarget.dataset.sx;if(d<-40)switchHero((heroIdx+1)%heroes.length);else if(d>40)switchHero((heroIdx-1+heroes.length)%heroes.length);}}>
             <img src={heroes[heroIdx]} alt="" style={ss.heroImg}/>
             <div style={ss.heroGrad}/>

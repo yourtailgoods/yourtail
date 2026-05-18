@@ -7,6 +7,16 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const MIME = { jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', gif:'image/gif', webp:'image/webp' }
+const VERCEL_URL = 'https://yourtail.vercel.app'
+
+async function syncToVercel(apiPath, body, contentType = 'application/json') {
+  try {
+    await fetch(VERCEL_URL + apiPath, { method: 'POST', headers: { 'content-type': contentType }, body })
+    console.log(`[sync] ✓ ${apiPath}`)
+  } catch (e) {
+    console.log(`[sync] ✗ ${apiPath}: ${e.message}`)
+  }
+}
 
 function prodsApi() {
   const file = path.resolve('./data/prods.json')
@@ -34,6 +44,7 @@ function prodsApi() {
             JSON.parse(body)
             await fs.promises.mkdir(path.dirname(file), { recursive: true })
             await fs.promises.writeFile(file, body)
+            syncToVercel('/api/prods', body)
             res.statusCode = 204
             res.end()
           } catch {
@@ -68,6 +79,7 @@ function prodsApi() {
             JSON.parse(body)
             await fs.promises.mkdir(path.dirname(stateFile), { recursive: true })
             await fs.promises.writeFile(stateFile, body)
+            syncToVercel('/api/state/' + key, body)
             res.statusCode = 204
             res.end()
           } catch {
@@ -87,15 +99,23 @@ function prodsApi() {
           const name = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
           await fs.promises.mkdir(uploadsDir, { recursive: true })
           const filePath = path.join(uploadsDir, name)
-          const out = fs.createWriteStream(filePath)
-          await new Promise((resolve, reject) => {
-            req.pipe(out)
-            out.on('finish', resolve)
-            out.on('error', reject)
-            req.on('error', reject)
-          })
+          const chunks = []
+          for await (const c of req) chunks.push(c)
+          const fileBuffer = Buffer.concat(chunks)
+          await fs.promises.writeFile(filePath, fileBuffer)
+          // Vercel에도 업로드
+          let vercelUrl = '/api/uploads/' + name
+          try {
+            const vRes = await fetch(VERCEL_URL + '/api/upload?ext=' + ext, {
+              method: 'POST',
+              headers: { 'content-type': MIME[ext] || 'application/octet-stream' },
+              body: fileBuffer
+            })
+            const vData = await vRes.json()
+            if (vData.url) { vercelUrl = vData.url; console.log('[sync] ✓ upload:', vercelUrl) }
+          } catch (e) { console.log('[sync] ✗ upload:', e.message) }
           res.setHeader('content-type', 'application/json')
-          res.end(JSON.stringify({ url: '/api/uploads/' + name }))
+          res.end(JSON.stringify({ url: vercelUrl }))
         } catch (e) {
           res.statusCode = 500
           res.end(String(e))
