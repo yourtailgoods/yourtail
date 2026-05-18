@@ -21,8 +21,8 @@ export default async function handler(req, res) {
       const body = JSON.stringify(req.body);
       await put(blobPath, body, { access: 'public', addRandomSuffix: false, contentType: 'application/json' });
       res.status(204).end();
-    } catch {
-      res.status(400).end('invalid json');
+    } catch (e) {
+      res.status(400).end('error: ' + (e.message || String(e)));
     }
     return;
   }
